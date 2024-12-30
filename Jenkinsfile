@@ -14,7 +14,7 @@ pipeline {
             steps {
                 bat '''
                 echo "Installing dependencies..."
-                cd register\\src  // Change to the directory where package.json is located
+                cd register // Change to the directory where package.json is located
                 npm install
                 '''
             }
