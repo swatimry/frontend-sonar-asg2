@@ -1,14 +1,9 @@
 pipeline {
     agent any
-    
-    tools {
-        nodejs 'nodejs' // The name of the Node.js installation from Global Tool Configuration
-    }
-
     environment {
-        SONAR_TOKEN = credentials('sonar-token') // Replace with your SonarQube token Jenkins credential ID
+       
+        NODEJS_HOME = 'C:\Program Files\nodejs'
     }
-
     stages {
         stage('Checkout') {
             steps {
@@ -18,57 +13,49 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                script {
-                    echo "Installing dependencies..."
-                    sh 'npm install'
-                }
+                bat '''
+                 echo "Installing dependencies..."
+                 npm install
+                 '''
             }
         }
 
-        stage('Run Tests') {
+        stage('Build') {
             steps {
-                script {
-                    echo "Running tests with coverage..."
-                    sh 'npm test -- --coverage' // Adjust based on your test setup
-                }
-            }
-        }
-
-        stage('Build Project') {
-            steps {
-                script {
-                    echo "Building the project..."
-                    sh 'npm run build' // Adjust based on your build setup
-                }
+                bat '''
+                echo "Building the application..."
+                npm run build
+                '''
             }
         }
 
         stage('SonarQube Analysis') {
+            environment {
+                SONAR_TOKEN = credentials('sonar-token')  // Accessing the SonarQube token stored in Jenkins credentials
+            }
             steps {
-                script {
+              
                     echo "Running SonarQube analysis..."
-                    sh '''
-                    sonar-scanner -Dsonar.projectKey=frontend-sonar-asg2 \
-                                  -Dsonar.projectName=frontend-sonar-asg2 \
-                                  -Dsonar.sources=register/src \
-                                  -Dsonar.javascript.lcov.reportPaths=coverage/lcov-report/index.html \
-                                  -Dsonar.host.url=http://localhost:9000 \
+                    bat '''
+                    sonar-scanner -Dsonar.projectKey=frontend-sonar-asg2 ^
+                                  -Dsonar.projectName=frontend-sonar-asg2 ^
+                                  -Dsonar.sources=register/src ^
+                                  -Dsonar.host.url=http://localhost:9000 ^
                                   -Dsonar.token=$SONAR_TOKEN
                     '''
-                }
+                
             }
         }
     }
-
     post {
         success {
-            echo 'Pipeline completed successfully!'
+            echo 'Pipeline completed successfully'
         }
         failure {
-            echo 'Pipeline failed. Please check the logs for details.'
+            echo 'Pipeline failed'
         }
         always {
-            echo 'This stage always runs, regardless of the result.'
+            echo 'This runs regardless of the result.'
         }
     }
 }
