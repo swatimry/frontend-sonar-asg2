@@ -1,8 +1,7 @@
 pipeline {
     agent any
     environment {
-       
-        NODEJS_HOME = 'C:\Program Files\nodejs'
+        NODEJS_HOME = 'C:\\Program Files\\nodejs'  // Corrected path format
     }
     stages {
         stage('Checkout') {
@@ -14,9 +13,9 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 bat '''
-                 echo "Installing dependencies..."
-                 npm install
-                 '''
+                echo "Installing dependencies..."
+                npm install
+                '''
             }
         }
 
@@ -34,16 +33,14 @@ pipeline {
                 SONAR_TOKEN = credentials('sonar-token')  // Accessing the SonarQube token stored in Jenkins credentials
             }
             steps {
-              
-                    echo "Running SonarQube analysis..."
-                    bat '''
-                    sonar-scanner -Dsonar.projectKey=frontend-sonar-asg2 ^
-                                  -Dsonar.projectName=frontend-sonar-asg2 ^
-                                  -Dsonar.sources=register/src/App.js ^
-                                  -Dsonar.host.url=http://localhost:9000 ^
-                                  -Dsonar.token=$SONAR_TOKEN
-                    '''
-                
+                echo "Running SonarQube analysis..."
+                bat '''
+                sonar-scanner -Dsonar.projectKey=frontend-sonar-asg2 ^
+                              -Dsonar.projectName=frontend-sonar-asg2 ^
+                              -Dsonar.sources=register/src ^  // Pointing to the 'src' folder instead of a single file
+                              -Dsonar.host.url=http://localhost:9000 ^
+                              -Dsonar.token=%SONAR_TOKEN%  // Using %SONAR_TOKEN% for Windows batch
+                '''
             }
         }
     }
