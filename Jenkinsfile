@@ -14,6 +14,7 @@ pipeline {
             steps {
                 bat '''
                 echo "Installing dependencies..."
+                cd register\\src  // Change to the directory where package.json is located
                 npm install
                 '''
             }
@@ -23,6 +24,7 @@ pipeline {
             steps {
                 bat '''
                 echo "Building the application..."
+                cd register  // Change to the directory where your build script is located
                 npm run build
                 '''
             }
@@ -35,11 +37,12 @@ pipeline {
             steps {
                 echo "Running SonarQube analysis..."
                 bat '''
+                cd register  // Change to the directory where your source files are located
                 sonar-scanner -Dsonar.projectKey=frontend-sonar-asg2 ^
                               -Dsonar.projectName=frontend-sonar-asg2 ^
-                              -Dsonar.sources=register/src ^  // Pointing to the 'src' folder instead of a single file
+                              -Dsonar.sources=src ^  // Adjust source directory if necessary
                               -Dsonar.host.url=http://localhost:9000 ^
-                              -Dsonar.token=%SONAR_TOKEN%  // Using %SONAR_TOKEN% for Windows batch
+                              -Dsonar.token=%SONAR_TOKEN%
                 '''
             }
         }
