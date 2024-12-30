@@ -39,7 +39,7 @@ pipeline {
                     bat '''
                     sonar-scanner -Dsonar.projectKey=frontend-sonar-asg2 ^
                                   -Dsonar.projectName=frontend-sonar-asg2 ^
-                                  -Dsonar.sources=register/src ^
+                                  -Dsonar.sources=register/src/App.js ^
                                   -Dsonar.host.url=http://localhost:9000 ^
                                   -Dsonar.token=$SONAR_TOKEN
                     '''
