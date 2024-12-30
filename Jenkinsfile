@@ -50,7 +50,7 @@ pipeline {
                     sh '''
                     sonar-scanner -Dsonar.projectKey=frontend-sonar-asg2 \
                                   -Dsonar.projectName=frontend-sonar-asg2 \
-                                  -Dsonar.sources=. \
+                                  -Dsonar.sources=register/src \
                                   -Dsonar.javascript.lcov.reportPaths=coverage/lcov-report/index.html \
                                   -Dsonar.host.url=http://localhost:9000 \
                                   -Dsonar.token=$SONAR_TOKEN
